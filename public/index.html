@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Quarter — The 25 That Define the Art</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo" data-link>
+          <span class="logo-the">THE</span>
+          <span class="logo-quarter">QUARTER</span>
+        </a>
+        <nav class="nav">
+          <a href="/games"     class="nav-link games-link" data-link>Games</a>
+          <a href="/films"     class="nav-link films-link" data-link>Films</a>
+          <a href="/community" class="nav-link"            data-link>Community</a>
+          <a href="/people" class="nav-link" data-link>People</a>
+          <div id="authButtons" class="nav-auth">
+            <button class="btn btn-ghost btn-sm" id="loginBtn">Sign In</button>
+            <button class="btn btn-primary btn-sm" id="registerBtn">Join</button>
+          </div>
+          <div id="userMenu" class="user-menu hidden">
+            <a href="#" class="user-greeting" id="profileLink" data-link></a>
+            <button class="btn btn-games btn-sm" id="adminBtn" style="display:none">Admin</button>
+            <button class="btn btn-ghost btn-sm" id="logoutBtn">Sign Out</button>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Page outlet ────────────────────────────────────────────────────── -->
+  <main id="app"></main>
+
+  <!-- ── Footer ─────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">
+        <span class="logo-the">THE</span>
+        <span class="logo-quarter">QUARTER</span>
+      </div>
+      <p class="footer-tagline">The 25 that define the art.</p>
+      <p class="footer-copy">© 2025 The Quarter. All opinions are final.</p>
+    </div>
+  </footer>
+
+  <!-- ── Toast ──────────────────────────────────────────────────────────── -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- ── Login Modal ────────────────────────────────────────────────────── -->
+  <div class="modal-overlay hidden" id="loginModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <div class="modal-head">
+        <h3 id="loginTitle">Sign In</h3>
+        <button class="modal-close" data-close="loginModal" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="googleWrapLogin" class="google-wrap hidden">
+          <div id="googleBtnLogin"></div>
+          <div class="or-divider"><span>or</span></div>
+        </div>
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
+          </div>
+          <p class="form-error hidden" id="loginError" role="alert"></p>
+          <button type="submit" class="btn btn-primary full-w">Sign In</button>
+        </form>
+        <p class="modal-foot-text">No account? <a href="#" id="switchToRegister">Join The Quarter</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Register Modal ─────────────────────────────────────────────────── -->
+  <div class="modal-overlay hidden" id="registerModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
+      <div class="modal-head">
+        <h3 id="registerTitle">Join The Quarter</h3>
+        <button class="modal-close" data-close="registerModal" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="googleWrapRegister" class="google-wrap hidden">
+          <div id="googleBtnRegister"></div>
+          <div class="or-divider"><span>or</span></div>
+        </div>
+        <form id="registerForm" novalidate>
+          <div class="field">
+            <label for="regUsername">Username</label>
+            <input type="text" id="regUsername" placeholder="cinephile42" autocomplete="username" required>
+          </div>
+          <div class="field">
+            <label for="regEmail">Email</label>
+            <input type="email" id="regEmail" placeholder="your@email.com" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="regPassword">Password</label>
+            <input type="password" id="regPassword" placeholder="Min. 8 characters" autocomplete="new-password" required>
+            <div class="pw-strength-wrap" id="regPwStrength">
+              <div class="pw-bars">
+                <div class="pw-bar"></div><div class="pw-bar"></div>
+                <div class="pw-bar"></div><div class="pw-bar"></div>
+              </div>
+              <span class="pw-label"></span>
+            </div>
+            <ul class="pw-requirements">
+              <li class="pw-req" id="regReqLength">8+ characters</li>
+              <li class="pw-req" id="regReqTypes">3 character types (A-Z, a-z, 0-9, symbols)</li>
+            </ul>
+          </div>
+          <p class="form-error hidden" id="registerError" role="alert"></p>
+          <button type="submit" class="btn btn-primary full-w">Create Account</button>
+        </form>
+        <p class="modal-foot-text">Already a member? <a href="#" id="switchToLogin">Sign In</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Admin Modal ────────────────────────────────────────────────────── -->
+  <div class="modal-overlay hidden" id="adminModal">
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+      <div class="modal-head">
+        <h3 id="adminTitle">Admin Panel</h3>
+        <button class="modal-close" data-close="adminModal" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="admin-tabs">
+          <button class="admin-tab active" data-tab="lists"  onclick="switchAdminTab('lists')">Lists</button>
+          <button class="admin-tab"        data-tab="polls"  onclick="switchAdminTab('polls')">Polls</button>
+        </div>
+        <div id="adminTabContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

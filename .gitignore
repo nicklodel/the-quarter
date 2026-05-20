@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Environment secrets
+.env
+
+# Runtime data
+db.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Claude Code workspace config
+.claude/
