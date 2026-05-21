@@ -305,14 +305,11 @@ app.post('/api/auth/google', async (req,res) => {
 });
 
 // ── Lists ─────────────────────────────────────────────────────────────────────
-app.get('/api/categories/:cat/lists', parseToken, (req,res) => {
+app.get('/api/categories/:cat/lists', (req,res) => {
   const lists = db.find('lists', l=>l.category===req.params.cat && l.is_active).sort((a,b)=>a.id-b.id);
-  const isAdmin = !!req.user?.is_admin;
   res.json(lists.map(l => {
     const items = db.find('list_items', i=>i.list_id===l.id);
-    const revealed = items.filter(i=>i.is_revealed);
-    // Non-admins only see the count of revealed items — total is not exposed
-    return { ...l, total_count: isAdmin ? items.length : revealed.length, revealed_count: revealed.length };
+    return { ...l, total_count: items.length, revealed_count: items.filter(i=>i.is_revealed).length };
   }));
 });
 
@@ -320,9 +317,9 @@ app.get('/api/lists/:id', parseToken, (req,res) => {
   const list = db.findOne('lists', l=>l.id===+req.params.id && l.is_active);
   if (!list) return res.status(404).json({error:'List not found'});
   const isAdmin = !!req.user?.is_admin;
-  // Non-admins only receive revealed items — hidden items are completely absent from the response
+  // Admins see full data for all items; non-admins see a placeholder for hidden items (no title/description/genre/year)
   const items = db.find('list_items', i=>i.list_id===list.id).sort((a,b)=>a.rank-b.rank)
-    .filter(item => isAdmin || item.is_revealed);
+    .map(item => (isAdmin || item.is_revealed) ? item : {id:item.id, list_id:item.list_id, rank:item.rank, is_revealed:false});
   res.json({...list, items});
 });
 
