@@ -126,6 +126,24 @@ button { font-family: inherit; cursor: pointer; }
 
 .nav-auth { display: flex; gap: 6px; }
 .user-menu { display: flex; align-items: center; gap: 8px; }
+
+/* ── Language switcher ──────────────────────────────────────────────────────── */
+.lang-switcher {
+  display: flex; align-items: center; gap: 2px;
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 3px; margin-right: 6px;
+}
+.lang-btn {
+  padding: 4px 10px; border-radius: 6px; font-size: 12px;
+  font-weight: 700; letter-spacing: 0.06em;
+  background: transparent; border: none;
+  color: var(--t600); cursor: pointer;
+  transition: all var(--ease);
+}
+.lang-btn:hover { color: var(--t200); }
+.lang-btn.active {
+  background: var(--s4); color: var(--t100);
+}
 .user-greeting {
   font-size: 13px; color: var(--t400); text-decoration: none;
   transition: color var(--ease);
@@ -940,6 +958,7 @@ button { font-family: inherit; cursor: pointer; }
 /* ── Responsive ─────────────────────────────────────────────────────────────── */
 @media (max-width: 720px) {
   .nav-link { display: none; }
+  .lang-switcher { display: none; }
   .hero { padding: 60px 0 52px; }
   .hero-title { font-size: 44px; }
   .hero-ctas .btn { flex: 1; }

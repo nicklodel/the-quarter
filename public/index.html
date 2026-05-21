@@ -20,17 +20,21 @@
           <span class="logo-quarter">QUARTER</span>
         </a>
         <nav class="nav">
-          <a href="/games"     class="nav-link games-link" data-link>Games</a>
-          <a href="/community" class="nav-link"            data-link>Community</a>
-          <a href="/people" class="nav-link" data-link>People</a>
+          <a href="/games"     class="nav-link games-link" data-link data-i18n="nav.games">Juegos</a>
+          <a href="/community" class="nav-link"            data-link data-i18n="nav.community">Comunidad</a>
+          <a href="/people"    class="nav-link"            data-link data-i18n="nav.people">Personas</a>
+          <div class="lang-switcher">
+            <button class="lang-btn" data-lang="es" onclick="switchLang('es')">ES</button>
+            <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
+          </div>
           <div id="authButtons" class="nav-auth">
-            <button class="btn btn-ghost btn-sm" id="loginBtn">Sign In</button>
-            <button class="btn btn-primary btn-sm" id="registerBtn">Join</button>
+            <button class="btn btn-ghost btn-sm" id="loginBtn" data-i18n="nav.signIn">Iniciar Sesión</button>
+            <button class="btn btn-primary btn-sm" id="registerBtn" data-i18n="nav.join">Únete</button>
           </div>
           <div id="userMenu" class="user-menu hidden">
             <a href="#" class="user-greeting" id="profileLink" data-link></a>
-            <button class="btn btn-games btn-sm" id="adminBtn" style="display:none">Admin</button>
-            <button class="btn btn-ghost btn-sm" id="logoutBtn">Sign Out</button>
+            <button class="btn btn-games btn-sm" id="adminBtn" style="display:none" data-i18n="admin.title">Panel de Admin</button>
+            <button class="btn btn-ghost btn-sm" id="logoutBtn" data-i18n="nav.signOut">Cerrar Sesión</button>
           </div>
         </nav>
       </div>
@@ -47,8 +51,8 @@
         <span class="logo-the">THE</span>
         <span class="logo-quarter">QUARTER</span>
       </div>
-      <p class="footer-tagline">The 25 that define the art.</p>
-      <p class="footer-copy">© 2025 The Quarter. All opinions are final.</p>
+      <p class="footer-tagline" data-i18n="footer.tagline">Los 25 que definen el arte.</p>
+      <p class="footer-copy" data-i18n="footer.copy">© 2025 The Quarter. Todas las opiniones son definitivas.</p>
     </div>
   </footer>
 
@@ -59,27 +63,27 @@
   <div class="modal-overlay hidden" id="loginModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
       <div class="modal-head">
-        <h3 id="loginTitle">Sign In</h3>
+        <h3 id="loginTitle" data-i18n="auth.loginTitle">Iniciar Sesión</h3>
         <button class="modal-close" data-close="loginModal" aria-label="Close">×</button>
       </div>
       <div class="modal-body">
         <div id="googleWrapLogin" class="google-wrap hidden">
           <div id="googleBtnLogin"></div>
-          <div class="or-divider"><span>or</span></div>
+          <div class="or-divider"><span>o</span></div>
         </div>
         <form id="loginForm" novalidate>
           <div class="field">
-            <label for="loginEmail">Email</label>
-            <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email" required>
+            <label for="loginEmail" data-i18n="auth.email">Correo electrónico</label>
+            <input type="email" id="loginEmail" data-i18n-ph="auth.emailPh" placeholder="tu@correo.com" autocomplete="email" required>
           </div>
           <div class="field">
-            <label for="loginPassword">Password</label>
-            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
+            <label for="loginPassword" data-i18n="auth.password">Contraseña</label>
+            <input type="password" id="loginPassword" data-i18n-ph="auth.passwordPh" placeholder="••••••••" autocomplete="current-password" required>
           </div>
           <p class="form-error hidden" id="loginError" role="alert"></p>
-          <button type="submit" class="btn btn-primary full-w">Sign In</button>
+          <button type="submit" class="btn btn-primary full-w" data-i18n="auth.loginBtn">Iniciar Sesión</button>
         </form>
-        <p class="modal-foot-text">No account? <a href="#" id="switchToRegister">Join The Quarter</a></p>
+        <p class="modal-foot-text"><span data-i18n="auth.noAccount">¿Sin cuenta?</span> <a href="#" id="switchToRegister" data-i18n="auth.joinLink">Únete a The Quarter</a></p>
       </div>
     </div>
   </div>
@@ -88,26 +92,26 @@
   <div class="modal-overlay hidden" id="registerModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
       <div class="modal-head">
-        <h3 id="registerTitle">Join The Quarter</h3>
+        <h3 id="registerTitle" data-i18n="auth.registerTitle">Únete a The Quarter</h3>
         <button class="modal-close" data-close="registerModal" aria-label="Close">×</button>
       </div>
       <div class="modal-body">
         <div id="googleWrapRegister" class="google-wrap hidden">
           <div id="googleBtnRegister"></div>
-          <div class="or-divider"><span>or</span></div>
+          <div class="or-divider"><span>o</span></div>
         </div>
         <form id="registerForm" novalidate>
           <div class="field">
-            <label for="regUsername">Username</label>
-            <input type="text" id="regUsername" placeholder="cinephile42" autocomplete="username" required>
+            <label for="regUsername" data-i18n="auth.username">Nombre de usuario</label>
+            <input type="text" id="regUsername" data-i18n-ph="auth.usernamePh" placeholder="cinefilo42" autocomplete="username" required>
           </div>
           <div class="field">
-            <label for="regEmail">Email</label>
-            <input type="email" id="regEmail" placeholder="your@email.com" autocomplete="email" required>
+            <label for="regEmail" data-i18n="auth.email">Correo electrónico</label>
+            <input type="email" id="regEmail" data-i18n-ph="auth.emailPh" placeholder="tu@correo.com" autocomplete="email" required>
           </div>
           <div class="field">
-            <label for="regPassword">Password</label>
-            <input type="password" id="regPassword" placeholder="Min. 8 characters" autocomplete="new-password" required>
+            <label for="regPassword" data-i18n="auth.password">Contraseña</label>
+            <input type="password" id="regPassword" data-i18n-ph="auth.minPw" placeholder="Mín. 8 caracteres" autocomplete="new-password" required>
             <div class="pw-strength-wrap" id="regPwStrength">
               <div class="pw-bars">
                 <div class="pw-bar"></div><div class="pw-bar"></div>
@@ -116,14 +120,14 @@
               <span class="pw-label"></span>
             </div>
             <ul class="pw-requirements">
-              <li class="pw-req" id="regReqLength">8+ characters</li>
-              <li class="pw-req" id="regReqTypes">3 character types (A-Z, a-z, 0-9, symbols)</li>
+              <li class="pw-req" id="regReqLength" data-i18n="pw.reqLength">8+ caracteres</li>
+              <li class="pw-req" id="regReqTypes"  data-i18n="pw.reqTypes">3 tipos de caracteres (A-Z, a-z, 0-9, símbolos)</li>
             </ul>
           </div>
           <p class="form-error hidden" id="registerError" role="alert"></p>
-          <button type="submit" class="btn btn-primary full-w">Create Account</button>
+          <button type="submit" class="btn btn-primary full-w" data-i18n="auth.createBtn">Crear Cuenta</button>
         </form>
-        <p class="modal-foot-text">Already a member? <a href="#" id="switchToLogin">Sign In</a></p>
+        <p class="modal-foot-text"><span data-i18n="auth.alreadyMember">¿Ya eres miembro?</span> <a href="#" id="switchToLogin" data-i18n="auth.signInLink">Iniciar Sesión</a></p>
       </div>
     </div>
   </div>
@@ -132,13 +136,13 @@
   <div class="modal-overlay hidden" id="adminModal">
     <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
       <div class="modal-head">
-        <h3 id="adminTitle">Admin Panel</h3>
+        <h3 id="adminTitle" data-i18n="admin.title">Panel de Admin</h3>
         <button class="modal-close" data-close="adminModal" aria-label="Close">×</button>
       </div>
       <div class="modal-body">
         <div class="admin-tabs">
-          <button class="admin-tab active" data-tab="lists"  onclick="switchAdminTab('lists')">Lists</button>
-          <button class="admin-tab"        data-tab="polls"  onclick="switchAdminTab('polls')">Polls</button>
+          <button class="admin-tab active" data-tab="lists"  onclick="switchAdminTab('lists')"  data-i18n="admin.lists">Listas</button>
+          <button class="admin-tab"        data-tab="polls"  onclick="switchAdminTab('polls')"  data-i18n="admin.polls">Votaciones</button>
         </div>
         <div id="adminTabContent"></div>
       </div>

@@ -2,6 +2,284 @@
 let currentUser = null;
 let _toastTimer = null;
 
+/* ── i18n ───────────────────────────────────────────────────────────────────── */
+let currentLang = localStorage.getItem('tq_lang') || 'es';
+
+const T = {
+  en: {
+    nav: {
+      games: 'Games', community: 'Community', people: 'People', films: 'Films',
+      signIn: 'Sign In', join: 'Join', signOut: 'Sign Out',
+    },
+    home: {
+      eyebrow: 'THE DEFINITIVE LISTS',
+      title: 'The 25 That<br>Define the Art',
+      subtitle: 'Curated rankings of the finest games and films ever made.<br>Vote, debate, and discover your own Quarter.',
+      exploreGames: 'Explore Games',
+      essentialGames: 'Essential Games',
+      catBadge: 'Videogames',
+      catTitle: 'The Quarter: Games',
+      catSub: 'Twenty-five games that pushed the boundaries of what interactive art can be.',
+      noLists: 'No lists yet',
+    },
+    cat: {
+      backHome: 'Home', backGames: 'Games', backFilms: 'Films',
+      featured: '★ FEATURED',
+      curatedBy: 'Curated by', by: 'By',
+      viewFull: 'View full list →',
+      moreLists: 'MORE LISTS',
+      noItems: 'No items yet.',
+      noLists: 'No lists yet.',
+      gamesTitle: 'The Quarter: Games',
+      gamesSub: 'Twenty-five games that pushed the boundaries of interactive art.',
+      gameBadge: 'VIDEOGAMES',
+      filmsTitle: 'The Quarter: Films',
+      filmsSub: 'Twenty-five films that captured something essential about the human experience.',
+      filmBadge: 'CINEMA',
+    },
+    item: { comingSoon: 'Coming Soon' },
+    community: {
+      backHome: 'Home',
+      badge: 'COMMUNITY',
+      title: "The People's Quarter",
+      sub: 'Vote on what belongs in the definitive lists. Your opinion shapes the canon.',
+      noPolls: 'No active polls yet. Check back soon.',
+      loginPrompt: 'Sign in to cast your votes and help shape The Quarter.',
+      loginBtn: 'Sign In to Vote',
+      votes: n => `${n} vote${n !== 1 ? 's' : ''}`,
+    },
+    profile: {
+      private: 'Private', privateMsg: 'This profile is private.',
+      backPeople: '← People',
+      settings: 'Profile Settings',
+      firstName: 'First Name', lastName: 'Last Name',
+      bio: 'Bio', bioPlaceholder: 'Tell people about yourself…',
+      publicProfile: 'Public Profile',
+      publicSub: 'Other users can find and view your profile',
+      saveChanges: 'Save Changes', saving: 'Saving…',
+      myQuarter: 'My Quarter',
+      usersQuarter: u => `${u}'s Quarter`,
+      noItems: 'No items yet.', addFirst: ' Add your first pick below!',
+      rank: 'Rank', type: 'Type',
+      typeAny: 'Any', typeGame: 'Game', typeFilm: 'Film',
+      titleLabel: 'Title', year: 'Year', add: 'Add',
+      desc: 'Description (optional)',
+      changePw: 'Change Password',
+      googleHint: 'You signed in with Google — leave Current Password blank to set a password for the first time.',
+      currentPw: 'Current Password',
+      newPw: 'New Password', minPw: 'Min. 8 characters',
+      confirmPw: 'Confirm New Password', repeatPw: 'Repeat new password',
+      updatePw: 'Update Password', updating: 'Updating…',
+      pwUpdated: 'Password updated successfully',
+      profileUpdated: 'Profile updated',
+      addedQuarter: 'Added to your Quarter',
+      removedQuarter: 'Removed',
+      removeConfirm: 'Remove this from your Quarter?',
+      pwNoMatch: 'Passwords do not match',
+      pwWeak: 'Password too weak — use 8+ characters and at least 3 character types',
+      typeBadgeGame: 'GAME', typeBadgeFilm: 'FILM',
+    },
+    people: {
+      title: 'People',
+      sub: 'Find other members of The Quarter',
+      searchPh: 'Search by username or name…',
+      startTyping: 'Start typing to find people.',
+      noFound: 'No members found.',
+    },
+    notFound: { title: '404', text: "This page doesn't exist.", back: '← Back home' },
+    footer: {
+      tagline: 'The 25 that define the art.',
+      copy: '© 2025 The Quarter. All opinions are final.',
+    },
+    auth: {
+      loginTitle: 'Sign In',
+      email: 'Email', emailPh: 'your@email.com',
+      password: 'Password', passwordPh: '••••••••',
+      loginBtn: 'Sign In',
+      noAccount: 'No account?', joinLink: 'Join The Quarter',
+      registerTitle: 'Join The Quarter',
+      username: 'Username', usernamePh: 'cinephile42',
+      minPw: 'Min. 8 characters',
+      createBtn: 'Create Account',
+      alreadyMember: 'Already a member?', signInLink: 'Sign In',
+    },
+    pw: {
+      labels: ['', 'Weak', 'Fair', 'Good', 'Strong'],
+      reqLength: '8+ characters',
+      reqTypes: '3 character types (A-Z, a-z, 0-9, symbols)',
+    },
+    toast: {
+      welcome:     n => `Welcome, ${n}!`,
+      welcomeBack: n => `Welcome back, ${n}!`,
+      welcomeNew:  n => `Welcome to The Quarter, ${n}!`,
+      signedOut: 'Signed out',
+      googleFail: 'Google sign-in failed',
+    },
+    admin: { title: 'Admin Panel', lists: 'Lists', polls: 'Polls' },
+    confirm: {
+      deleteList: 'Delete this list and all its items?',
+      deleteItem: 'Delete this item?',
+      deletePoll: 'Delete this poll?',
+    },
+    loading: 'Loading…',
+  },
+  es: {
+    nav: {
+      games: 'Juegos', community: 'Comunidad', people: 'Personas', films: 'Películas',
+      signIn: 'Iniciar Sesión', join: 'Únete', signOut: 'Cerrar Sesión',
+    },
+    home: {
+      eyebrow: 'LAS LISTAS DEFINITIVAS',
+      title: 'Los 25 Que<br>Definen el Arte',
+      subtitle: 'Rankings curados de los mejores juegos y películas jamás creados.<br>Vota, debate y descubre tu propio Quarter.',
+      exploreGames: 'Explorar Juegos',
+      essentialGames: 'Juegos Esenciales',
+      catBadge: 'Videojuegos',
+      catTitle: 'The Quarter: Juegos',
+      catSub: 'Veinticinco juegos que empujaron los límites de lo que el arte interactivo puede ser.',
+      noLists: 'Sin listas',
+    },
+    cat: {
+      backHome: 'Inicio', backGames: 'Juegos', backFilms: 'Películas',
+      featured: '★ DESTACADO',
+      curatedBy: 'Seleccionado por', by: 'Por',
+      viewFull: 'Ver lista completa →',
+      moreLists: 'MÁS LISTAS',
+      noItems: 'Sin elementos aún.',
+      noLists: 'Sin listas aún.',
+      gamesTitle: 'The Quarter: Juegos',
+      gamesSub: 'Veinticinco juegos que empujaron los límites del arte interactivo.',
+      gameBadge: 'VIDEOJUEGOS',
+      filmsTitle: 'The Quarter: Películas',
+      filmsSub: 'Veinticinco películas que capturaron algo esencial de la experiencia humana.',
+      filmBadge: 'CINE',
+    },
+    item: { comingSoon: 'Próximamente' },
+    community: {
+      backHome: 'Inicio',
+      badge: 'COMUNIDAD',
+      title: 'El Quarter del Pueblo',
+      sub: 'Vota sobre qué pertenece a las listas definitivas. Tu opinión da forma al canon.',
+      noPolls: 'Sin votaciones activas todavía. Vuelve pronto.',
+      loginPrompt: 'Inicia sesión para votar y ayudar a dar forma a The Quarter.',
+      loginBtn: 'Iniciar Sesión para Votar',
+      votes: n => `${n} voto${n !== 1 ? 's' : ''}`,
+    },
+    profile: {
+      private: 'Privado', privateMsg: 'Este perfil es privado.',
+      backPeople: '← Personas',
+      settings: 'Configuración del Perfil',
+      firstName: 'Nombre', lastName: 'Apellido',
+      bio: 'Biografía', bioPlaceholder: 'Cuéntale a la gente sobre ti…',
+      publicProfile: 'Perfil Público',
+      publicSub: 'Otros usuarios pueden encontrar y ver tu perfil',
+      saveChanges: 'Guardar Cambios', saving: 'Guardando…',
+      myQuarter: 'Mi Quarter',
+      usersQuarter: u => `El Quarter de ${u}`,
+      noItems: 'Sin elementos aún.', addFirst: ' ¡Añade tu primera selección abajo!',
+      rank: 'Posición', type: 'Tipo',
+      typeAny: 'Cualquiera', typeGame: 'Juego', typeFilm: 'Película',
+      titleLabel: 'Título', year: 'Año', add: 'Añadir',
+      desc: 'Descripción (opcional)',
+      changePw: 'Cambiar Contraseña',
+      googleHint: 'Iniciaste sesión con Google — deja la Contraseña Actual en blanco para establecer una contraseña por primera vez.',
+      currentPw: 'Contraseña Actual',
+      newPw: 'Nueva Contraseña', minPw: 'Mín. 8 caracteres',
+      confirmPw: 'Confirmar Nueva Contraseña', repeatPw: 'Repetir nueva contraseña',
+      updatePw: 'Actualizar Contraseña', updating: 'Actualizando…',
+      pwUpdated: 'Contraseña actualizada correctamente',
+      profileUpdated: 'Perfil actualizado',
+      addedQuarter: 'Añadido a tu Quarter',
+      removedQuarter: 'Eliminado',
+      removeConfirm: '¿Eliminar esto de tu Quarter?',
+      pwNoMatch: 'Las contraseñas no coinciden',
+      pwWeak: 'Contraseña demasiado débil — usa 8+ caracteres y al menos 3 tipos de caracteres',
+      typeBadgeGame: 'JUEGO', typeBadgeFilm: 'PELÍCULA',
+    },
+    people: {
+      title: 'Personas',
+      sub: 'Encuentra otros miembros de The Quarter',
+      searchPh: 'Buscar por usuario o nombre…',
+      startTyping: 'Empieza a escribir para encontrar personas.',
+      noFound: 'No se encontraron miembros.',
+    },
+    notFound: { title: '404', text: 'Esta página no existe.', back: '← Volver al inicio' },
+    footer: {
+      tagline: 'Los 25 que definen el arte.',
+      copy: '© 2025 The Quarter. Todas las opiniones son definitivas.',
+    },
+    auth: {
+      loginTitle: 'Iniciar Sesión',
+      email: 'Correo electrónico', emailPh: 'tu@correo.com',
+      password: 'Contraseña', passwordPh: '••••••••',
+      loginBtn: 'Iniciar Sesión',
+      noAccount: '¿Sin cuenta?', joinLink: 'Únete a The Quarter',
+      registerTitle: 'Únete a The Quarter',
+      username: 'Nombre de usuario', usernamePh: 'cinefilo42',
+      minPw: 'Mín. 8 caracteres',
+      createBtn: 'Crear Cuenta',
+      alreadyMember: '¿Ya eres miembro?', signInLink: 'Iniciar Sesión',
+    },
+    pw: {
+      labels: ['', 'Débil', 'Regular', 'Buena', 'Fuerte'],
+      reqLength: '8+ caracteres',
+      reqTypes: '3 tipos de caracteres (A-Z, a-z, 0-9, símbolos)',
+    },
+    toast: {
+      welcome:     n => `¡Bienvenido, ${n}!`,
+      welcomeBack: n => `¡Bienvenido de nuevo, ${n}!`,
+      welcomeNew:  n => `¡Bienvenido a The Quarter, ${n}!`,
+      signedOut: 'Sesión cerrada',
+      googleFail: 'Error al iniciar sesión con Google',
+    },
+    admin: { title: 'Panel de Admin', lists: 'Listas', polls: 'Votaciones' },
+    confirm: {
+      deleteList: '¿Eliminar esta lista y todos sus elementos?',
+      deleteItem: '¿Eliminar este elemento?',
+      deletePoll: '¿Eliminar esta votación?',
+    },
+    loading: 'Cargando…',
+  },
+};
+
+function t(key, ...args) {
+  const keys = key.split('.');
+  let val = T[currentLang];
+  for (const k of keys) { if (val == null) break; val = val[k]; }
+  if (val === undefined || val === null) {
+    val = T.en;
+    for (const k of keys) { if (val == null) break; val = val[k]; }
+  }
+  if (typeof val === 'function') return val(...args);
+  return val !== undefined ? val : key;
+}
+
+function switchLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('tq_lang', lang);
+  applyStaticTranslations();
+  route(location.pathname);
+  updateNavActive(location.pathname);
+}
+
+function applyStaticTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const val = t(el.getAttribute('data-i18n'));
+    if (typeof val === 'string') el.textContent = val;
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const val = t(el.getAttribute('data-i18n-ph'));
+    if (typeof val === 'string') el.placeholder = val;
+  });
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.lang === currentLang)
+  );
+}
+
+function getPwLabel(score) {
+  return ((T[currentLang] || T.en).pw.labels)[score] || '';
+}
+
 /* ── API helper ─────────────────────────────────────────────────────────────── */
 const api = {
   _req(method, path, body) {
@@ -45,18 +323,16 @@ function esc(s) {
 /* ── Password validation & strength ─────────────────────────────────────────── */
 function passwordScore(pw) {
   if (!pw) return 0;
-  const long     = pw.length >= 8;
-  const types    = [/[A-Z]/, /[a-z]/, /[0-9]/, /[^A-Za-z0-9]/].filter(r => r.test(pw)).length;
+  const long  = pw.length >= 8;
+  const types = [/[A-Z]/, /[a-z]/, /[0-9]/, /[^A-Za-z0-9]/].filter(r => r.test(pw)).length;
   if (types === 4 && long) return 4;
-  if (types >= 3 && long)  return 3;   // meets minimum requirements
+  if (types >= 3 && long)  return 3;
   if (types >= 2)          return 2;
   return 1;
 }
 
-const SCORE_LABELS = ['', 'Weak', 'Fair', 'Good', 'Strong'];
-
 function attachStrengthMeter(inputEl, wrapId, reqLengthId, reqTypesId) {
-  const wrap    = document.getElementById(wrapId);
+  const wrap = document.getElementById(wrapId);
   if (!wrap) return;
   const bars    = wrap.querySelectorAll('.pw-bar');
   const label   = wrap.querySelector('.pw-label');
@@ -69,16 +345,13 @@ function attachStrengthMeter(inputEl, wrapId, reqLengthId, reqTypesId) {
     const long  = pw.length >= 8;
     const types = pw ? [/[A-Z]/, /[a-z]/, /[0-9]/, /[^A-Za-z0-9]/].filter(r => r.test(pw)).length : 0;
 
-    // Bars
     bars.forEach((b, i) => {
       b.className = 'pw-bar' + (i < score ? ` active-${score}` : '');
     });
 
-    // Label
-    label.textContent  = pw ? SCORE_LABELS[score] : '';
-    label.className    = `pw-label${pw ? ` score-${score}` : ''}`;
+    label.textContent = pw ? getPwLabel(score) : '';
+    label.className   = `pw-label${pw ? ` score-${score}` : ''}`;
 
-    // Requirements checklist
     if (reqLen)  reqLen.classList.toggle('met',  long);
     if (reqType) reqType.classList.toggle('met', types >= 3);
   });
@@ -154,9 +427,9 @@ async function handleGoogleCredential(response) {
     initAuth();
     renderAuthUI();
     closeAllModals();
-    showToast('Welcome, ' + (currentUser.username || currentUser.email) + '!');
+    showToast(t('toast.welcome', currentUser.username || currentUser.email));
   } catch (e) {
-    showToast(e.message || 'Google sign-in failed');
+    showToast(e.message || t('toast.googleFail'));
   }
 }
 
@@ -190,7 +463,7 @@ function updateNavActive(path) {
 
 function route(path) {
   const app = document.getElementById('app');
-  app.innerHTML = '<div class="loading">Loading…</div>';
+  app.innerHTML = '<div class="loading">' + t('loading') + '</div>';
 
   if (path === '/') return renderHome();
   if (path === '/games') return renderCategory('games');
@@ -198,7 +471,7 @@ function route(path) {
   if (path === '/community') return renderCommunity();
   if (path === '/people') return renderPeople();
 
-  const listMatch    = path.match(/^\/list\/(\w+)$/);
+  const listMatch = path.match(/^\/list\/(\w+)$/);
   if (listMatch) return renderListPage(listMatch[1]);
 
   const profileMatch = path.match(/^\/profile\/([^/]+)$/);
@@ -232,33 +505,28 @@ async function renderHome() {
 
   const gameChips = gamesLists.slice(0, 3)
     .map(l => `<span class="cat-chip">${esc(l.title)}</span>`).join('');
-  const filmChips = filmsLists.slice(0, 3)
-    .map(l => `<span class="cat-chip">${esc(l.title)}</span>`).join('');
 
   app.innerHTML = `
     <section class="hero" id="top">
       <div class="container">
-        <p class="hero-eyebrow">THE DEFINITIVE LISTS</p>
-        <h1 class="hero-title">The 25 That<br>Define the Art</h1>
-        <p class="hero-subtitle">
-          Curated rankings of the finest games and films ever made.<br>
-          Vote, debate, and discover your own Quarter.
-        </p>
+        <p class="hero-eyebrow">${t('home.eyebrow')}</p>
+        <h1 class="hero-title">${t('home.title')}</h1>
+        <p class="hero-subtitle">${t('home.subtitle')}</p>
         <div class="hero-ctas">
-          <a href="/games" class="btn btn-games btn-lg" data-link>Explore Games</a>
+          <a href="/games" class="btn btn-games btn-lg" data-link>${t('home.exploreGames')}</a>
         </div>
         <div class="hero-stats">
           <div class="hero-stat games-stat">
             <span class="stat-n">25</span>
-            <span class="stat-l">Essential Games</span>
+            <span class="stat-l">${t('home.essentialGames')}</span>
           </div>
         </div>
         <div class="home-cats">
           <a href="/games" class="home-cat-card games-cat-card" data-link>
-            <span class="cat-card-badge">Videogames</span>
-            <p class="cat-card-title">The Quarter: Games</p>
-            <p class="cat-card-sub">Twenty-five games that pushed the boundaries of what interactive art can be.</p>
-            <div class="cat-chips">${gameChips || '<span class="cat-chip">No lists yet</span>'}</div>
+            <span class="cat-card-badge">${t('home.catBadge')}</span>
+            <p class="cat-card-title">${t('home.catTitle')}</p>
+            <p class="cat-card-sub">${t('home.catSub')}</p>
+            <div class="cat-chips">${gameChips || '<span class="cat-chip">' + t('home.noLists') + '</span>'}</div>
           </a>
         </div>
       </div>
@@ -268,14 +536,13 @@ async function renderHome() {
 /* ── Render: Category ───────────────────────────────────────────────────────── */
 async function renderCategory(cat) {
   const app = document.getElementById('app');
-  const isGames = cat === 'games';
+  const isGames  = cat === 'games';
   const heroClass = isGames ? 'games-hero' : 'films-hero';
-  const badge = isGames ? 'VIDEOGAMES' : 'CINEMA';
+  const badge    = isGames ? t('cat.gameBadge')  : t('cat.filmBadge');
   const catClass = isGames ? 'games' : 'films';
-  const title = isGames ? 'The Quarter: Games' : 'The Quarter: Films';
-  const sub = isGames
-    ? 'Twenty-five games that pushed the boundaries of interactive art.'
-    : 'Twenty-five films that captured something essential about the human experience.';
+  const title    = isGames ? t('cat.gamesTitle') : t('cat.filmsTitle');
+  const sub      = isGames ? t('cat.gamesSub')   : t('cat.filmsSub');
+  const backLabel = t('cat.backHome');
 
   let lists = [];
   try { lists = await api.get('/api/categories/' + cat + '/lists'); } catch { /* empty */ }
@@ -283,13 +550,11 @@ async function renderCategory(cat) {
   const featured = lists.find(l => l.is_featured);
   const others   = lists.filter(l => !l.is_featured);
 
-  // Fetch featured list's items if there is one
   let featuredList = null;
   if (featured) {
     try { featuredList = await api.get('/api/lists/' + featured.id); } catch { /* ignore */ }
   }
 
-  // Featured items section
   let featuredHTML = '';
   if (featuredList) {
     const items = (featuredList.items || []).sort((a, b) => a.rank - b.rank);
@@ -298,41 +563,39 @@ async function renderCategory(cat) {
       <div class="featured-list-section">
         <div class="featured-list-header">
           <div>
-            <span class="featured-badge">★ FEATURED</span>
+            <span class="featured-badge">${t('cat.featured')}</span>
             <h2 class="featured-list-title">${esc(featuredList.title)}</h2>
-            ${featuredList.author_name ? `<p class="featured-list-author">Curated by ${esc(featuredList.author_name)}</p>` : ''}
+            ${featuredList.author_name ? `<p class="featured-list-author">${t('cat.curatedBy')} ${esc(featuredList.author_name)}</p>` : ''}
           </div>
-          <a href="/list/${esc(featuredList.id)}" class="btn btn-outline btn-sm" data-link>View full list →</a>
+          <a href="/list/${esc(featuredList.id)}" class="btn btn-outline btn-sm" data-link>${t('cat.viewFull')}</a>
         </div>
-        <div class="list-wrap ${catClass}-list-page">${itemsHTML || '<p class="muted-text">No items yet.</p>'}</div>
+        <div class="list-wrap ${catClass}-list-page">${itemsHTML || '<p class="muted-text">' + t('cat.noItems') + '</p>'}</div>
       </div>`;
   }
 
-  // Other lists card grid
   const otherCards = others.map(l => `
     <a href="/list/${esc(l.id)}" class="list-card ${catClass}-list-card" data-link>
       <p class="list-card-eyebrow">THE QUARTER • ${badge}</p>
       <p class="list-card-title">${esc(l.title)}</p>
-      ${l.author_name ? `<p class="list-card-author">By ${esc(l.author_name)}</p>` : ''}
+      ${l.author_name ? `<p class="list-card-author">${t('cat.by')} ${esc(l.author_name)}</p>` : ''}
       ${l.description ? `<p class="list-card-desc">${esc(l.description)}</p>` : ''}
     </a>`).join('');
 
-  // If no featured, show all lists as cards
   const allCards = lists.map(l => `
     <a href="/list/${esc(l.id)}" class="list-card ${catClass}-list-card" data-link>
       <p class="list-card-eyebrow">THE QUARTER • ${badge}</p>
       <p class="list-card-title">${esc(l.title)}</p>
-      ${l.author_name ? `<p class="list-card-author">By ${esc(l.author_name)}</p>` : ''}
+      ${l.author_name ? `<p class="list-card-author">${t('cat.by')} ${esc(l.author_name)}</p>` : ''}
       ${l.description ? `<p class="list-card-desc">${esc(l.description)}</p>` : ''}
     </a>`).join('');
 
   let bodyHTML;
   if (!lists.length) {
-    bodyHTML = '<p class="muted-text">No lists yet.</p>';
+    bodyHTML = '<p class="muted-text">' + t('cat.noLists') + '</p>';
   } else if (featuredHTML) {
     bodyHTML = featuredHTML + (others.length ? `
       <div class="other-lists-section">
-        <p class="other-lists-label">MORE LISTS</p>
+        <p class="other-lists-label">${t('cat.moreLists')}</p>
         <div class="list-cards-grid">${otherCards}</div>
       </div>` : '');
   } else {
@@ -344,7 +607,7 @@ async function renderCategory(cat) {
       <div class="container">
         <a href="/" class="back-link" data-link>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          Home
+          ${backLabel}
         </a>
         <p class="page-hero-eyebrow"><span class="section-badge ${isGames ? 'games' : 'films'}-badge">${badge}</span></p>
         <h1 class="page-hero-title">${title}</h1>
@@ -364,11 +627,12 @@ async function renderListPage(id) {
   try { list = await api.get('/api/lists/' + id); }
   catch { return renderNotFound(); }
 
-  const isGames = list.category === 'games';
+  const isGames  = list.category === 'games';
   const heroClass = isGames ? 'games-hero' : 'films-hero';
-  const badge = isGames ? 'VIDEOGAMES' : 'CINEMA';
+  const badge    = isGames ? t('cat.gameBadge') : t('cat.filmBadge');
   const pageClass = isGames ? 'games-list-page' : 'films-list-page';
-  const backHref = '/' + list.category;
+  const backHref  = '/' + list.category;
+  const backLabel = isGames ? t('cat.backGames') : t('cat.backFilms');
 
   const items = (list.items || []).sort((a, b) => a.rank - b.rank);
   const itemsHTML = items.map(it => renderItem(it)).join('');
@@ -378,17 +642,17 @@ async function renderListPage(id) {
       <div class="container">
         <a href="${backHref}" class="back-link" data-link>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          ${isGames ? 'Games' : 'Films'}
+          ${backLabel}
         </a>
         <p class="page-hero-eyebrow"><span class="section-badge ${isGames ? 'games' : 'films'}-badge">${badge}</span></p>
         <h1 class="page-hero-title">${esc(list.title)}</h1>
         ${list.description ? `<p class="page-hero-sub">${esc(list.description)}</p>` : ''}
-        ${list.author_name ? `<p class="page-hero-author">Curated by ${esc(list.author_name)}</p>` : ''}
+        ${list.author_name ? `<p class="page-hero-author">${t('cat.curatedBy')} ${esc(list.author_name)}</p>` : ''}
       </div>
     </section>
     <div class="page-body">
       <div class="container">
-        <div class="list-wrap ${pageClass}">${itemsHTML || '<p class="muted-text">No items yet.</p>'}</div>
+        <div class="list-wrap ${pageClass}">${itemsHTML || '<p class="muted-text">' + t('cat.noItems') + '</p>'}</div>
       </div>
     </div>`;
 }
@@ -402,7 +666,7 @@ function renderItem(item) {
         <div class="list-info">
           <div class="unrevealed-row">
             <span class="unrevealed-lock">🔒</span>
-            <span class="unrevealed-label">Coming Soon</span>
+            <span class="unrevealed-label">${t('item.comingSoon')}</span>
           </div>
           <div class="unrevealed-lines">
             <div class="unrev-line" style="width:68%"></div>
@@ -437,11 +701,11 @@ async function renderCommunity() {
       <div class="container">
         <a href="/" class="back-link" data-link>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          Home
+          ${t('community.backHome')}
         </a>
-        <p class="page-hero-eyebrow"><span class="section-badge">COMMUNITY</span></p>
-        <h1 class="page-hero-title">The People's Quarter</h1>
-        <p class="page-hero-sub">Vote on what belongs in the definitive lists. Your opinion shapes the canon.</p>
+        <p class="page-hero-eyebrow"><span class="section-badge">${t('community.badge')}</span></p>
+        <h1 class="page-hero-title">${t('community.title')}</h1>
+        <p class="page-hero-sub">${t('community.sub')}</p>
       </div>
     </section>
     <div class="page-body">
@@ -449,21 +713,21 @@ async function renderCommunity() {
         <div id="pollsContainer">${renderPollsHTML(polls)}</div>
         ${!currentUser ? `
           <div class="login-prompt" style="margin-top:24px">
-            <p>Sign in to cast your votes and help shape The Quarter.</p>
-            <button class="btn btn-primary" onclick="openModal('loginModal')">Sign In to Vote</button>
+            <p>${t('community.loginPrompt')}</p>
+            <button class="btn btn-primary" onclick="openModal('loginModal')">${t('community.loginBtn')}</button>
           </div>` : ''}
       </div>
     </div>`;
 }
 
 function renderPollsHTML(polls) {
-  if (!polls.length) return '<p class="no-polls">No active polls yet. Check back soon.</p>';
+  if (!polls.length) return '<p class="no-polls">' + t('community.noPolls') + '</p>';
   return `<div class="polls-grid">${polls.map(p => renderPollCard(p)).join('')}</div>`;
 }
 
 function renderPollCard(poll) {
   const totalVotes = poll.options.reduce((s, o) => s + (o.vote_count || 0), 0);
-  const cat = poll.category || 'games';
+  const cat    = poll.category || 'games';
   const isGames = cat === 'games';
 
   const optionsHTML = poll.options.map(opt => {
@@ -489,9 +753,9 @@ function renderPollCard(poll) {
     <div class="poll-card" id="poll-${poll.id}">
       <div class="poll-card-head">
         <p class="poll-q">${esc(poll.title)}</p>
-        <span class="poll-cat-badge ${isGames ? 'cat-games' : 'cat-films'}">${isGames ? 'Games' : 'Films'}</span>
+        <span class="poll-cat-badge ${isGames ? 'cat-games' : 'cat-films'}">${isGames ? t('nav.games') : t('nav.films')}</span>
       </div>
-      <p class="poll-votes-count">${totalVotes} vote${totalVotes !== 1 ? 's' : ''}</p>
+      <p class="poll-votes-count">${t('community.votes', totalVotes)}</p>
       <div class="poll-options">${optionsHTML}</div>
     </div>`;
 }
@@ -517,9 +781,9 @@ async function castVote(pollId, optId) {
 function renderNotFound() {
   document.getElementById('app').innerHTML = `
     <div class="not-found">
-      <h2>404</h2>
-      <p>This page doesn't exist.</p>
-      <a href="/" class="btn btn-ghost" data-link style="margin-top:24px">← Back home</a>
+      <h2>${t('notFound.title')}</h2>
+      <p>${t('notFound.text')}</p>
+      <a href="/" class="btn btn-ghost" data-link style="margin-top:24px">${t('notFound.back')}</a>
     </div>`;
 }
 
@@ -535,9 +799,9 @@ async function renderProfile(username) {
     if (e.message && e.message.toLowerCase().includes('private')) {
       app.innerHTML = `
         <div class="not-found">
-          <h2>Private</h2>
-          <p>This profile is private.</p>
-          <a href="/people" class="btn btn-ghost" data-link style="margin-top:24px">← People</a>
+          <h2>${t('profile.private')}</h2>
+          <p>${t('profile.privateMsg')}</p>
+          <a href="/people" class="btn btn-ghost" data-link style="margin-top:24px">${t('profile.backPeople')}</a>
         </div>`;
       return;
     }
@@ -560,33 +824,33 @@ async function renderProfile(username) {
           ${profile.bio ? `<p class="profile-bio">${esc(profile.bio)}</p>` : ''}
           <div class="profile-badges">
             ${profile.is_admin ? `<span class="profile-badge admin">★ Admin</span>` : ''}
-            ${!profile.is_public ? `<span class="profile-badge private">Private</span>` : ''}
+            ${!profile.is_public ? `<span class="profile-badge private">${t('profile.private')}</span>` : ''}
           </div>
         </div>
       </div>
 
       ${isSelf ? `
       <div class="profile-section">
-        <p class="profile-section-title">Profile Settings</p>
+        <p class="profile-section-title">${t('profile.settings')}</p>
         <form id="profileSettingsForm">
           <div class="profile-name-row">
             <div class="field">
-              <label for="profileFirstName">First Name</label>
-              <input type="text" id="profileFirstName" value="${esc(profile.first_name||'')}" placeholder="First name" maxlength="50">
+              <label for="profileFirstName">${t('profile.firstName')}</label>
+              <input type="text" id="profileFirstName" value="${esc(profile.first_name||'')}" placeholder="${t('profile.firstName')}" maxlength="50">
             </div>
             <div class="field">
-              <label for="profileLastName">Last Name</label>
-              <input type="text" id="profileLastName" value="${esc(profile.last_name||'')}" placeholder="Last name" maxlength="50">
+              <label for="profileLastName">${t('profile.lastName')}</label>
+              <input type="text" id="profileLastName" value="${esc(profile.last_name||'')}" placeholder="${t('profile.lastName')}" maxlength="50">
             </div>
           </div>
           <div class="field">
-            <label for="profileBio">Bio</label>
-            <textarea id="profileBio" placeholder="Tell people about yourself…" maxlength="300" rows="3">${esc(profile.bio||'')}</textarea>
+            <label for="profileBio">${t('profile.bio')}</label>
+            <textarea id="profileBio" placeholder="${t('profile.bioPlaceholder')}" maxlength="300" rows="3">${esc(profile.bio||'')}</textarea>
           </div>
           <div class="toggle-row">
             <div>
-              <p class="toggle-label">Public Profile</p>
-              <p class="toggle-sub">Other users can find and view your profile</p>
+              <p class="toggle-label">${t('profile.publicProfile')}</p>
+              <p class="toggle-sub">${t('profile.publicSub')}</p>
             </div>
             <label class="toggle-switch">
               <input type="checkbox" id="profileIsPublic" ${profile.is_public ? 'checked' : ''}>
@@ -594,43 +858,43 @@ async function renderProfile(username) {
             </label>
           </div>
           <p class="form-error hidden" id="profileSettingsError"></p>
-          <button type="submit" class="btn btn-primary" style="margin-top:18px">Save Changes</button>
+          <button type="submit" class="btn btn-primary" style="margin-top:18px">${t('profile.saveChanges')}</button>
         </form>
       </div>
       ` : ''}
 
       <div class="profile-section">
-        <p class="profile-section-title">${isSelf ? 'My Quarter' : esc(profile.username) + "'s Quarter"}</p>
+        <p class="profile-section-title">${isSelf ? t('profile.myQuarter') : t('profile.usersQuarter', profile.username)}</p>
         ${buildPersonalListHTML(profile.list, isSelf)}
         ${isSelf ? `
         <form id="addPersonalItemForm">
           <div class="add-personal-grid">
             <div class="field">
-              <label>Rank</label>
+              <label>${t('profile.rank')}</label>
               <input type="number" id="piRank" min="1" max="100" placeholder="#" required>
             </div>
             <div class="field type-field">
-              <label>Type</label>
+              <label>${t('profile.type')}</label>
               <select id="piType">
-                <option value="">Any</option>
-                <option value="game">Game</option>
-                <option value="film">Film</option>
+                <option value="">${t('profile.typeAny')}</option>
+                <option value="game">${t('profile.typeGame')}</option>
+                <option value="film">${t('profile.typeFilm')}</option>
               </select>
             </div>
             <div class="field">
-              <label>Title</label>
-              <input type="text" id="piTitle" placeholder="Title" required>
+              <label>${t('profile.titleLabel')}</label>
+              <input type="text" id="piTitle" placeholder="${t('profile.titleLabel')}" required>
             </div>
             <div class="field year-field">
-              <label>Year</label>
-              <input type="number" id="piYear" placeholder="Year" min="1900" max="2030">
+              <label>${t('profile.year')}</label>
+              <input type="number" id="piYear" placeholder="${t('profile.year')}" min="1900" max="2030">
             </div>
             <div class="field" style="align-self:end">
-              <button type="submit" class="btn btn-primary full-w" style="margin-bottom:0">Add</button>
+              <button type="submit" class="btn btn-primary full-w" style="margin-bottom:0">${t('profile.add')}</button>
             </div>
           </div>
           <div class="field" style="margin-top:8px">
-            <input type="text" id="piDesc" placeholder="Description (optional)" maxlength="200">
+            <input type="text" id="piDesc" placeholder="${t('profile.desc')}" maxlength="200">
           </div>
           <p class="form-error hidden" id="addPersonalItemError"></p>
         </form>
@@ -639,17 +903,17 @@ async function renderProfile(username) {
 
       ${isSelf ? `
       <div class="profile-section">
-        <p class="profile-section-title">Change Password</p>
-        ${!currentUser.has_password ? `<p class="field-hint" style="margin-bottom:16px">You signed in with Google — leave Current Password blank to set a password for the first time.</p>` : ''}
+        <p class="profile-section-title">${t('profile.changePw')}</p>
+        ${!currentUser.has_password ? `<p class="field-hint" style="margin-bottom:16px">${t('profile.googleHint')}</p>` : ''}
         <form id="profileChangePwForm" class="change-pw-form" novalidate>
           ${currentUser.has_password ? `
           <div class="field">
-            <label for="profCurrentPw">Current Password</label>
-            <input type="password" id="profCurrentPw" placeholder="Your current password" autocomplete="current-password">
+            <label for="profCurrentPw">${t('profile.currentPw')}</label>
+            <input type="password" id="profCurrentPw" placeholder="${t('profile.currentPw')}" autocomplete="current-password">
           </div>` : ''}
           <div class="field">
-            <label for="profNewPw">New Password</label>
-            <input type="password" id="profNewPw" placeholder="Min. 8 characters" autocomplete="new-password" required>
+            <label for="profNewPw">${t('profile.newPw')}</label>
+            <input type="password" id="profNewPw" placeholder="${t('profile.minPw')}" autocomplete="new-password" required>
             <div class="pw-strength-wrap" id="profPwStrength">
               <div class="pw-bars">
                 <div class="pw-bar"></div><div class="pw-bar"></div>
@@ -658,16 +922,16 @@ async function renderProfile(username) {
               <span class="pw-label"></span>
             </div>
             <ul class="pw-requirements">
-              <li class="pw-req" id="profReqLength">8+ characters</li>
-              <li class="pw-req" id="profReqTypes">3 character types (A-Z, a-z, 0-9, symbols)</li>
+              <li class="pw-req" id="profReqLength">${t('pw.reqLength')}</li>
+              <li class="pw-req" id="profReqTypes">${t('pw.reqTypes')}</li>
             </ul>
           </div>
           <div class="field">
-            <label for="profConfirmPw">Confirm New Password</label>
-            <input type="password" id="profConfirmPw" placeholder="Repeat new password" autocomplete="new-password" required>
+            <label for="profConfirmPw">${t('profile.confirmPw')}</label>
+            <input type="password" id="profConfirmPw" placeholder="${t('profile.repeatPw')}" autocomplete="new-password" required>
           </div>
           <p class="form-error hidden" id="profChangePwError"></p>
-          <button type="submit" class="btn btn-primary">Update Password</button>
+          <button type="submit" class="btn btn-primary">${t('profile.updatePw')}</button>
         </form>
       </div>
       ` : ''}
@@ -681,7 +945,7 @@ async function renderProfile(username) {
     const errEl = document.getElementById('profileSettingsError');
     errEl.classList.add('hidden');
     const btn = e.target.querySelector('[type=submit]');
-    btn.disabled = true; btn.textContent = 'Saving…';
+    btn.disabled = true; btn.textContent = t('profile.saving');
     try {
       await api.patch('/api/auth/profile', {
         first_name: document.getElementById('profileFirstName').value.trim(),
@@ -689,12 +953,12 @@ async function renderProfile(username) {
         bio:        document.getElementById('profileBio').value.trim(),
         is_public:  document.getElementById('profileIsPublic').checked,
       });
-      showToast('Profile updated');
+      showToast(t('profile.profileUpdated'));
     } catch(err) {
       errEl.textContent = err.message;
       errEl.classList.remove('hidden');
     } finally {
-      btn.disabled = false; btn.textContent = 'Save Changes';
+      btn.disabled = false; btn.textContent = t('profile.saveChanges');
     }
   });
 
@@ -711,7 +975,7 @@ async function renderProfile(username) {
         type:        document.getElementById('piType').value || null,
         description: document.getElementById('piDesc').value.trim() || null,
       });
-      showToast('Added to your Quarter');
+      showToast(t('profile.addedQuarter'));
       renderProfile(username);
     } catch(err) {
       errEl.textContent = err.message;
@@ -731,34 +995,34 @@ async function renderProfile(username) {
     const newPw     = document.getElementById('profNewPw').value;
     const confirmPw = document.getElementById('profConfirmPw').value;
     if (newPw !== confirmPw) {
-      errEl.textContent = 'Passwords do not match'; errEl.classList.remove('hidden'); return;
+      errEl.textContent = t('profile.pwNoMatch'); errEl.classList.remove('hidden'); return;
     }
     if (passwordScore(newPw) < 3) {
-      errEl.textContent = 'Password too weak — use 8+ characters and at least 3 character types';
+      errEl.textContent = t('profile.pwWeak');
       errEl.classList.remove('hidden'); return;
     }
     const btn = e.target.querySelector('[type=submit]');
-    btn.disabled = true; btn.textContent = 'Updating…';
+    btn.disabled = true; btn.textContent = t('profile.updating');
     try {
       await api.post('/api/auth/change-password', { currentPassword: currentPw, newPassword: newPw });
-      showToast('Password updated successfully');
+      showToast(t('profile.pwUpdated'));
       currentUser.has_password = true;
       e.target.reset();
     } catch(err) {
       errEl.textContent = err.message; errEl.classList.remove('hidden');
     } finally {
-      btn.disabled = false; btn.textContent = 'Update Password';
+      btn.disabled = false; btn.textContent = t('profile.updatePw');
     }
   });
 }
 
 function buildPersonalListHTML(list, isSelf) {
   if (!list || !list.items || !list.items.length) {
-    return `<p class="personal-list-empty">No items yet.${isSelf ? ' Add your first pick below!' : ''}</p>`;
+    return `<p class="personal-list-empty">${t('profile.noItems')}${isSelf ? t('profile.addFirst') : ''}</p>`;
   }
   const rows = list.items.map(item => {
     const tc = item.type === 'game' ? 'game' : item.type === 'film' ? 'film' : 'none';
-    const tl = item.type === 'game' ? 'GAME' : item.type === 'film' ? 'FILM' : '—';
+    const tl = item.type === 'game' ? t('profile.typeBadgeGame') : item.type === 'film' ? t('profile.typeBadgeFilm') : '—';
     return `
       <div class="personal-item-row">
         <span class="personal-rank">${item.rank}</span>
@@ -775,10 +1039,10 @@ function buildPersonalListHTML(list, isSelf) {
 }
 
 async function deletePersonalItem(itemId) {
-  if (!confirm('Remove this from your Quarter?')) return;
+  if (!confirm(t('profile.removeConfirm'))) return;
   try {
     await api.delete('/api/items/' + itemId);
-    showToast('Removed');
+    showToast(t('profile.removedQuarter'));
     renderProfile(currentUser.username);
   } catch(e) { showToast(e.message); }
 }
@@ -788,13 +1052,13 @@ async function renderPeople() {
   const app = document.getElementById('app');
   app.innerHTML = `
     <div class="people-page">
-      <h1 style="font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:var(--t100);margin-bottom:8px">People</h1>
-      <p style="color:var(--t600);margin-bottom:32px">Find other members of The Quarter</p>
+      <h1 style="font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:var(--t100);margin-bottom:8px">${t('people.title')}</h1>
+      <p style="color:var(--t600);margin-bottom:32px">${t('people.sub')}</p>
       <div class="people-search-wrap">
         <span class="people-search-icon">⌕</span>
-        <input type="text" class="people-search-input" id="peopleSearch" placeholder="Search by username or name…" autocomplete="off">
+        <input type="text" class="people-search-input" id="peopleSearch" placeholder="${t('people.searchPh')}" autocomplete="off">
       </div>
-      <div id="peopleResults" class="people-empty"><p>Start typing to find people.</p></div>
+      <div id="peopleResults" class="people-empty"><p>${t('people.startTyping')}</p></div>
     </div>`;
 
   let timer;
@@ -804,7 +1068,7 @@ async function renderPeople() {
     const resultsEl = document.getElementById('peopleResults');
     if (!q) {
       resultsEl.className = 'people-empty';
-      resultsEl.innerHTML = '<p>Start typing to find people.</p>';
+      resultsEl.innerHTML = '<p>' + t('people.startTyping') + '</p>';
       return;
     }
     timer = setTimeout(async () => {
@@ -812,7 +1076,7 @@ async function renderPeople() {
         const users = await api.get('/api/users/search?q=' + encodeURIComponent(q));
         if (!users.length) {
           resultsEl.className = 'people-empty';
-          resultsEl.innerHTML = '<p>No members found.</p>';
+          resultsEl.innerHTML = '<p>' + t('people.noFound') + '</p>';
           return;
         }
         resultsEl.className = 'people-results';
@@ -938,7 +1202,7 @@ async function handleCreateList(e) {
 }
 
 async function adminDeleteList(id) {
-  if (!confirm('Delete this list and all its items?')) return;
+  if (!confirm(t('confirm.deleteList'))) return;
   try {
     await api.delete('/api/lists/' + id);
     showToast('List deleted');
@@ -1059,7 +1323,7 @@ async function adminHideItem(itemId, listId) {
 }
 
 async function adminDeleteItem(itemId, listId) {
-  if (!confirm('Delete this item?')) return;
+  if (!confirm(t('confirm.deleteItem'))) return;
   const y = _modalScrollTop();
   try {
     await api.delete('/api/items/' + itemId);
@@ -1162,7 +1426,7 @@ async function handleCreatePoll(e) {
     errEl.classList.remove('hidden');
     return;
   }
-  const options = titles.map((t, i) => ({ title: t, year: years[i] }));
+  const options = titles.map((tl, i) => ({ title: tl, year: years[i] }));
   try {
     await api.post('/api/polls', {
       title:    document.getElementById('pollTitle').value.trim(),
@@ -1178,7 +1442,7 @@ async function handleCreatePoll(e) {
 }
 
 async function adminDeletePoll(id) {
-  if (!confirm('Delete this poll?')) return;
+  if (!confirm(t('confirm.deletePoll'))) return;
   try {
     await api.delete('/api/polls/' + id);
     showToast('Poll deleted');
@@ -1190,6 +1454,7 @@ async function adminDeletePoll(id) {
 document.addEventListener('DOMContentLoaded', async () => {
   initAuth();
   renderAuthUI();
+  applyStaticTranslations();
 
   /* config (Google Sign-In) */
   try {
@@ -1225,7 +1490,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     localStorage.removeItem('tq_token');
     currentUser = null;
     renderAuthUI();
-    showToast('Signed out');
+    showToast(t('toast.signedOut'));
     route(location.pathname);
   });
 
@@ -1251,7 +1516,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       initAuth();
       renderAuthUI();
       closeModal('loginModal');
-      showToast('Welcome back, ' + (currentUser.username || currentUser.email) + '!');
+      showToast(t('toast.welcomeBack', currentUser.username || currentUser.email));
     } catch (err) {
       errEl.textContent = err.message;
       errEl.classList.remove('hidden');
@@ -1273,7 +1538,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       initAuth();
       renderAuthUI();
       closeModal('registerModal');
-      showToast('Welcome to The Quarter, ' + (currentUser.username || currentUser.email) + '!');
+      showToast(t('toast.welcomeNew', currentUser.username || currentUser.email));
     } catch (err) {
       errEl.textContent = err.message;
       errEl.classList.remove('hidden');
