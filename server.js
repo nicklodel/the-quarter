@@ -234,7 +234,6 @@ function migrate() {
 
   if (dirty) writeDB(data);
 }
-migrate();
 
 // ── Seed data ─────────────────────────────────────────────────────────────────
 const GAMES = [
@@ -320,7 +319,6 @@ function seed() {
     .forEach(s => { const [t,y]=s.split('|'); db.insert('poll_options',{poll_id:p2.id,title:t,year:+y,vote_count:0}); });
   console.log('✓ Polls seeded');
 }
-seed();
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 const parseToken = (req,res,next) => {
