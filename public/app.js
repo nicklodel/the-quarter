@@ -194,7 +194,7 @@ function route(path) {
 
   if (path === '/') return renderHome();
   if (path === '/games') return renderCategory('games');
-  if (path === '/films') return renderCategory('films');
+  if (path === '/films') return navigate('/', false);
   if (path === '/community') return renderCommunity();
   if (path === '/people') return renderPeople();
 
@@ -246,17 +246,11 @@ async function renderHome() {
         </p>
         <div class="hero-ctas">
           <a href="/games" class="btn btn-games btn-lg" data-link>Explore Games</a>
-          <a href="/films" class="btn btn-films btn-lg" data-link>Explore Films</a>
         </div>
         <div class="hero-stats">
           <div class="hero-stat games-stat">
             <span class="stat-n">25</span>
             <span class="stat-l">Essential Games</span>
-          </div>
-          <div class="hero-divider"></div>
-          <div class="hero-stat films-stat">
-            <span class="stat-n">25</span>
-            <span class="stat-l">Essential Films</span>
           </div>
         </div>
         <div class="home-cats">
@@ -265,12 +259,6 @@ async function renderHome() {
             <p class="cat-card-title">The Quarter: Games</p>
             <p class="cat-card-sub">Twenty-five games that pushed the boundaries of what interactive art can be.</p>
             <div class="cat-chips">${gameChips || '<span class="cat-chip">No lists yet</span>'}</div>
-          </a>
-          <a href="/films" class="home-cat-card films-cat-card" data-link>
-            <span class="cat-card-badge">Cinema</span>
-            <p class="cat-card-title">The Quarter: Films</p>
-            <p class="cat-card-sub">Twenty-five films that captured something essential about the human experience.</p>
-            <div class="cat-chips">${filmChips || '<span class="cat-chip">No lists yet</span>'}</div>
           </a>
         </div>
       </div>
