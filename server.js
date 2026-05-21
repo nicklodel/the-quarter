@@ -188,37 +188,81 @@ function migrate() {
     console.log('✓ Migration: list_items linked to lists');
   }
 
+  // ── Translate game descriptions + genres to Spanish (one-time migration) ──
+  if (!(data.migrations || []).includes('spanish_v1')) {
+    if (!data.migrations) data.migrations = [];
+
+    // Build lookup: rank → { description, genre } from current GAMES const
+    const gamesMap = {};
+    GAMES.forEach(g => { gamesMap[g.rank] = { description: g.description, genre: g.genre }; });
+
+    // Update game list items
+    if (data.list_items) {
+      data.list_items = data.list_items.map(item => {
+        if (item.category === 'games' && gamesMap[item.rank]) {
+          return { ...item, description: gamesMap[item.rank].description, genre: gamesMap[item.rank].genre };
+        }
+        return item;
+      });
+    }
+
+    // Update games list title & description
+    if (data.lists) {
+      data.lists = data.lists.map(list => {
+        if (list.category === 'games' && list.author_name === 'The Quarter') {
+          return { ...list, title: 'The Quarter: Juegos', description: 'Veinticinco juegos que marcaron un antes y un después en el arte interactivo.', is_featured: true };
+        }
+        return list;
+      });
+    }
+
+    // Update existing poll titles to Spanish
+    if (data.polls) {
+      data.polls = data.polls.map(p => {
+        if (p.title === 'Best game of the 2010s')
+          return { ...p, title: '¿Cuál es el mejor juego de la década de los 2010?' };
+        if (p.title === 'Greatest sci-fi film of the 21st century')
+          return { ...p, title: '¿Mejor película de ciencia ficción del siglo XXI?' };
+        return p;
+      });
+    }
+
+    data.migrations.push('spanish_v1');
+    dirty = true;
+    console.log('✓ Migration spanish_v1: descriptions & genres updated to Spanish');
+  }
+
   if (dirty) writeDB(data);
 }
 migrate();
 
 // ── Seed data ─────────────────────────────────────────────────────────────────
 const GAMES = [
-  { rank:1,  title:"Baldur's Gate 3",                          year:2023, genre:'RPG',              description:"Larian's decade-defining RPG — a game of infinite consequence where every choice reverberates through a story that truly listens." },
-  { rank:2,  title:'Sly 2: Ladrones de Guante Blanco',         year:2004, genre:'Action-Adventure', description:"The heist blueprint perfected. Cooper's gang, a world brimming with personality, and missions that never once outstay their welcome." },
-  { rank:3,  title:'Red Dead Redemption 2',                    year:2018, genre:'Action-Adventure', description:"Rockstar's magnum opus — an open world so alive with detail and consequence it feels less like a game and more like a vanishing world." },
-  { rank:4,  title:'Outer Wilds',                              year:2019, genre:'Exploration',      description:'Every answer leads to a deeper question. A game about time, extinction, and the courage to face what you find.' },
-  { rank:5,  title:'Subnautica',                               year:2018, genre:'Survival',         description:'A survival game built on wonder and dread in equal measure — the ocean floor as the most alien world ever rendered.' },
-  { rank:6,  title:"Marvel's Spider-Man 2",                    year:2023, genre:'Action-Adventure', description:"Insomniac's sequel doubles down on everything — two heroes, a richer city, and a symbiote story that earns its emotional weight." },
-  { rank:7,  title:'Hollow Knight: Silksong',                  year:2025, genre:'Metroidvania',     description:"Hornet's long-awaited solo turn — faster, stranger, and every bit as atmospheric as the underground kingdom it left behind." },
-  { rank:8,  title:'COD: Black Ops 3',                         year:2015, genre:'FPS',              description:"Treyarch's most ambitious entry — a cyberpunk campaign that swings for the surreal and multiplayer that hit its creative peak." },
-  { rank:9,  title:'Hollow Knight',                            year:2017, genre:'Metroidvania',     description:'Hallownest earns its silence. Every corner of this underground kingdom rewards patience with something extraordinary.' },
-  { rank:10, title:'The Last of Us',                           year:2013, genre:'Action-Adventure', description:"Joel and Ellie's cross-country journey redefined what emotional storytelling could mean in an action game." },
-  { rank:11, title:'Rayman Origins',                           year:2011, genre:'Platformer',       description:'UbiArt at its most joyful — a hand-painted fever dream of a platformer that makes every level a visual event.' },
-  { rank:12, title:'Super Mario 64 DS',                        year:2004, genre:'Platformer',       description:"The handheld refinement of gaming's greatest leap. Four playable characters and a world that still feels like discovery." },
-  { rank:13, title:'Pokémon Oro HeartGold',                    year:2009, genre:'RPG',              description:'Two regions, 16 badges, and a Pokémon that follows you everywhere. The richest game in the series, full stop.' },
-  { rank:14, title:'COD: Black Ops 2',                         year:2012, genre:'FPS',              description:'The campaign that dared to give you choices. Branching storylines and a multiplayer still running on servers a decade later.' },
-  { rank:15, title:'The Legend of Zelda: Breath of the Wild',  year:2017, genre:'Action-Adventure', description:'The moment it lets you off the Great Plateau is one of the finest in gaming. Everything else lives up to it.' },
-  { rank:16, title:'Journey',                                  year:2012, genre:'Adventure',        description:'Twelve minutes of shared silence with a stranger that says more about human connection than most novels.' },
-  { rank:17, title:'Ori and the Blind Forest',                 year:2015, genre:'Platformer',       description:"Moon Studios' debut is a love letter to movement — a platformer so fluid and beautiful it feels like playing animation." },
-  { rank:18, title:'Minecraft',                                year:2011, genre:'Sandbox',          description:"A world that generates itself and asks only what you'll build. The sandbox that swallowed a generation." },
-  { rank:19, title:'Lego Star Wars III: The Clone Wars',       year:2011, genre:'Action-Adventure', description:"The Clone Wars era rendered in Traveller's Tales' finest form — chaotic, warm, and more faithful to the source than it had any right to be." },
-  { rank:20, title:'Ratchet & Clank',                          year:2002, genre:'Action-Platformer', description:"Insomniac's original duo at their most inventive — a galaxy of absurd weapons, sharp writing, and platforming still worth returning to." },
-  { rank:21, title:'Inazuma Eleven 2: Ventisca Eterna',        year:2009, genre:'RPG',              description:"A football RPG with no right to be this emotionally gripping. Eleven's second chapter deepened everything that made the first special." },
-  { rank:22, title:'Uncharted 4: El Desenlace del Ladrón',     year:2016, genre:'Action-Adventure', description:"Naughty Dog's farewell to Drake is also their most personal game — an adventure about the stories we tell ourselves to keep going." },
-  { rank:23, title:'Firewatch',                                year:2016, genre:'Adventure',        description:"One summer in Wyoming, a radio, and a mystery that's really about loneliness and avoidance. Campo Santo at their quietest and best." },
-  { rank:24, title:'Rime',                                     year:2017, genre:'Puzzle-Adventure', description:'A wordless island puzzle that unravels into something devastating. Tequila Works built grief into the geometry.' },
-  { rank:25, title:'Donkey Kong Bananza',                      year:2025, genre:'Platformer',       description:"Nintendo's most tactile platformer in years — a world you can punch apart, and somehow that changes everything." },
+  { rank:1,  title:"Baldur's Gate 3",                          year:2023, genre:'RPG',              description:'El RPG de Larian que lo redefine todo. Cada decisión tiene peso real en una historia que parece escucharte de verdad.' },
+  { rank:2,  title:'Sly 2: Ladrones de Guante Blanco',         year:2004, genre:'Acción-Aventura',  description:'El manual del golpe perfecto. La banda de Cooper, un mundo lleno de personalidad y misiones que nunca aburren.' },
+  { rank:3,  title:'Red Dead Redemption 2',                    year:2018, genre:'Acción-Aventura',  description:'La obra cumbre de Rockstar. Un mundo abierto tan vivo que parece que un mundo entero se desvanece ante tus ojos.' },
+  { rank:4,  title:'Outer Wilds',                              year:2019, genre:'Exploración',      description:'Cada respuesta lleva a una pregunta más profunda. Un juego sobre el tiempo, la extinción y el valor de enfrentarse a lo que encuentras.' },
+  { rank:5,  title:'Subnautica',                               year:2018, genre:'Supervivencia',    description:'Un survival construido a partes iguales de asombro y terror. El fondo del océano como el mundo más alienígena jamás creado.' },
+  { rank:6,  title:"Marvel's Spider-Man 2",                    year:2023, genre:'Acción-Aventura',  description:'La secuela de Insomniac lo dobla todo: dos héroes, una ciudad más rica y una historia de simbionte que se gana su peso emocional.' },
+  { rank:7,  title:'Hollow Knight: Silksong',                  year:2025, genre:'Metroidvania',     description:'El esperado turno de Hornet en solitario, más rápido y más extraño, con toda la atmósfera del reino subterráneo que dejó atrás.' },
+  { rank:8,  title:'COD: Black Ops 3',                         year:2015, genre:'FPS',              description:'La entrega más ambiciosa de Treyarch: una campaña cyberpunk que apuesta por lo surrealista y un multijugador en su mejor momento.' },
+  { rank:9,  title:'Hollow Knight',                            year:2017, genre:'Metroidvania',     description:'Hallownest se gana su silencio. Cada rincón de este reino subterráneo premia la paciencia con algo extraordinario.' },
+  { rank:10, title:'The Last of Us',                           year:2013, genre:'Acción-Aventura',  description:'El viaje de Joel y Ellie redefinió lo que puede significar contar una historia emotiva en un videojuego de acción.' },
+  { rank:11, title:'Rayman Origins',                           year:2011, genre:'Plataformas',      description:'UbiArt en su momento más alegre: un sueño de plataformas pintado a mano que convierte cada nivel en un evento visual.' },
+  { rank:12, title:'Super Mario 64 DS',                        year:2004, genre:'Plataformas',      description:'El salto más grande del juego portátil. Cuatro personajes jugables y un mundo que todavía sorprende.' },
+  { rank:13, title:'Pokémon Oro HeartGold',                    year:2009, genre:'RPG',              description:'Dos regiones, 16 medallas y un Pokémon que te sigue a todas partes. El juego más completo de la saga, sin discusión.' },
+  { rank:14, title:'COD: Black Ops 2',                         year:2012, genre:'FPS',              description:'La campaña que se atrevió a darte opciones. Tramas ramificadas y un multijugador que sigue activo una década después.' },
+  { rank:15, title:'The Legend of Zelda: Breath of the Wild',  year:2017, genre:'Acción-Aventura',  description:'El momento en que te deja salir de la Gran Meseta es uno de los mejores del videojuego. El resto está a la altura.' },
+  { rank:16, title:'Journey',                                  year:2012, genre:'Aventura',         description:'Doce minutos de silencio compartido con un extraño que dice más sobre la conexión humana que la mayoría de las novelas.' },
+  { rank:17, title:'Ori and the Blind Forest',                 year:2015, genre:'Plataformas',      description:'El debut de Moon Studios es una carta de amor al movimiento: una plataformas tan fluida y hermosa que parece animación jugable.' },
+  { rank:18, title:'Minecraft',                                year:2011, genre:'Sandbox',          description:'Un mundo que se genera solo y solo pregunta qué construirás. La sandbox que se tragó a toda una generación.' },
+  { rank:19, title:'Lego Star Wars III: The Clone Wars',       year:2011, genre:'Acción-Aventura',  description:'La era de Clone Wars en la mejor forma de Traveller\'s Tales: caótico, entrañable y más fiel al original de lo que tenía derecho a ser.' },
+  { rank:20, title:'Ratchet & Clank',                          year:2002, genre:'Acción-Plataformas', description:'El dúo original de Insomniac en su mejor momento: una galaxia de armas absurdas, guiones afilados y plataformas que aún vale la pena revisitar.' },
+  { rank:21, title:'Inazuma Eleven 2: Ventisca Eterna',        year:2009, genre:'RPG',              description:'Un RPG de fútbol sin derecho a ser tan emocionante. El segundo capítulo profundiza todo lo que hizo especial al primero.' },
+  { rank:22, title:'Uncharted 4: El Desenlace del Ladrón',     year:2016, genre:'Acción-Aventura',  description:'La despedida de Naughty Dog a Drake es también su juego más personal: una aventura sobre las historias que nos contamos para seguir adelante.' },
+  { rank:23, title:'Firewatch',                                year:2016, genre:'Aventura',         description:'Un verano en Wyoming, una radio y un misterio que trata sobre la soledad y la huida. Campo Santo en su versión más íntima y mejor.' },
+  { rank:24, title:'Rime',                                     year:2017, genre:'Puzle-Aventura',   description:'Un puzle en una isla sin palabras que desemboca en algo devastador. Tequila Works construyó el duelo en la propia geometría.' },
+  { rank:25, title:'Donkey Kong Bananza',                      year:2025, genre:'Plataformas',      description:'La plataformas más táctil de Nintendo en años: un mundo que puedes destruir a puñetazos, y eso lo cambia absolutamente todo.' },
 ];
 const FILMS = [
   { rank:1,  title:'2001: A Space Odyssey',                   year:1968, genre:'Sci-Fi',          description:'Kubrick\'s transcendent vision of evolution and the infinite. Cinema as pure experience.' },
@@ -260,18 +304,18 @@ function seed() {
     console.log('✓ Admin  →  admin@thequarter.com / Admin@TheQuarter1');
   }
 
-  const gList = db.insert('lists', { title:"The Quarter's 25", category:'games', author_name:'The Quarter', description:'Twenty-five games that pushed the boundaries of what interactive art can be.', is_active:true, created_by:admin.id });
-  const fList = db.insert('lists', { title:"The Quarter's 25", category:'films', author_name:'The Quarter', description:'Twenty-five films that captured something essential about the human experience.', is_active:true, created_by:admin.id });
+  const gList = db.insert('lists', { title:"The Quarter: Juegos", category:'games', author_name:'The Quarter', description:'Veinticinco juegos que marcaron un antes y un después en el arte interactivo.', is_active:true, is_featured:true, created_by:admin.id });
+  const fList = db.insert('lists', { title:"The Quarter: Películas", category:'films', author_name:'The Quarter', description:'Veinticinco películas que capturaron algo esencial de la experiencia humana.', is_active:true, is_featured:false, created_by:admin.id });
 
   GAMES.forEach(g => db.insert('list_items', { ...g, list_id:gList.id, category:'games', is_revealed: g.rank<=10 }));
   FILMS.forEach(f => db.insert('list_items', { ...f, list_id:fList.id, category:'films', is_revealed: false }));
   console.log('✓ Lists seeded (1–10 visible, 11–25 hidden)');
 
-  const p1 = db.insert('polls', { title:'Best game of the 2010s', category:'games', created_by:admin.id, is_active:true });
+  const p1 = db.insert('polls', { title:'¿Cuál es el mejor juego de la década de los 2010?', category:'games', created_by:admin.id, is_active:true });
   ['The Witcher 3: Wild Hunt|2015','Red Dead Redemption 2|2018','God of War|2018','Dark Souls III|2016','Hollow Knight|2017']
     .forEach(s => { const [t,y]=s.split('|'); db.insert('poll_options',{poll_id:p1.id,title:t,year:+y,vote_count:0}); });
 
-  const p2 = db.insert('polls', { title:'Greatest sci-fi film of the 21st century', category:'films', created_by:admin.id, is_active:true });
+  const p2 = db.insert('polls', { title:'¿Mejor película de ciencia ficción del siglo XXI?', category:'films', created_by:admin.id, is_active:true });
   ['Blade Runner 2049|2017','Arrival|2016','Interstellar|2014','Her|2013','Ex Machina|2014']
     .forEach(s => { const [t,y]=s.split('|'); db.insert('poll_options',{poll_id:p2.id,title:t,year:+y,vote_count:0}); });
   console.log('✓ Polls seeded');
