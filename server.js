@@ -140,29 +140,29 @@ migrate();
 const GAMES = [
   { rank:1,  title:"Baldur's Gate 3",                          year:2023, genre:'RPG',              description:"Larian's decade-defining RPG — a game of infinite consequence where every choice reverberates through a story that truly listens." },
   { rank:2,  title:'Sly 2: Ladrones de Guante Blanco',         year:2004, genre:'Action-Adventure', description:"The heist blueprint perfected. Cooper's gang, a world brimming with personality, and missions that never once outstay their welcome." },
-  { rank:3,  title:'Outer Wilds',                              year:2019, genre:'Exploration',      description:'Every answer leads to a deeper question. A game about time, extinction, and the courage to face what you find.' },
-  { rank:4,  title:'Subnautica',                               year:2018, genre:'Survival',         description:'A survival game built on wonder and dread in equal measure — the ocean floor as the most alien world ever rendered.' },
-  { rank:5,  title:"Marvel's Spider-Man 2",                    year:2023, genre:'Action-Adventure', description:"Insomniac's sequel doubles down on everything — two heroes, a richer city, and a symbiote story that earns its emotional weight." },
-  { rank:6,  title:'Hollow Knight: Silksong',                  year:2025, genre:'Metroidvania',     description:"Hornet's long-awaited solo turn — faster, stranger, and every bit as atmospheric as the underground kingdom it left behind." },
-  { rank:7,  title:'COD: Black Ops 3',                         year:2015, genre:'FPS',              description:"Treyarch's most ambitious entry — a cyberpunk campaign that swings for the surreal and multiplayer that hit its creative peak." },
-  { rank:8,  title:'Hollow Knight',                            year:2017, genre:'Metroidvania',     description:'Hallownest earns its silence. Every corner of this underground kingdom rewards patience with something extraordinary.' },
-  { rank:9,  title:'The Last of Us',                           year:2013, genre:'Action-Adventure', description:"Joel and Ellie's cross-country journey redefined what emotional storytelling could mean in an action game." },
-  { rank:10, title:'Rayman Origins',                           year:2011, genre:'Platformer',       description:'UbiArt at its most joyful — a hand-painted fever dream of a platformer that makes every level a visual event.' },
-  { rank:11, title:'Super Mario 64 DS',                        year:2004, genre:'Platformer',       description:"The handheld refinement of gaming's greatest leap. Four playable characters and a world that still feels like discovery." },
-  { rank:12, title:'Pokémon Oro HeartGold',                    year:2009, genre:'RPG',              description:'Two regions, 16 badges, and a Pokémon that follows you everywhere. The richest game in the series, full stop.' },
-  { rank:13, title:'COD: Black Ops 2',                         year:2012, genre:'FPS',              description:'The campaign that dared to give you choices. Branching storylines and a multiplayer still running on servers a decade later.' },
-  { rank:14, title:'The Legend of Zelda: Breath of the Wild',  year:2017, genre:'Action-Adventure', description:'The moment it lets you off the Great Plateau is one of the finest in gaming. Everything else lives up to it.' },
-  { rank:15, title:'Journey',                                  year:2012, genre:'Adventure',        description:'Twelve minutes of shared silence with a stranger that says more about human connection than most novels.' },
-  { rank:16, title:'Ori and the Blind Forest',                 year:2015, genre:'Platformer',       description:"Moon Studios' debut is a love letter to movement — a platformer so fluid and beautiful it feels like playing animation." },
-  { rank:17, title:'Minecraft',                                year:2011, genre:'Sandbox',          description:"A world that generates itself and asks only what you'll build. The sandbox that swallowed a generation." },
-  { rank:18, title:'Lego Star Wars III: The Clone Wars',       year:2011, genre:'Action-Adventure', description:"The Clone Wars era rendered in Traveller's Tales' finest form — chaotic, warm, and more faithful to the source than it had any right to be." },
-  { rank:19, title:'Ratchet & Clank',                          year:2002, genre:'Action-Platformer', description:"Insomniac's original duo at their most inventive — a galaxy of absurd weapons, sharp writing, and platforming still worth returning to." },
-  { rank:20, title:'Inazuma Eleven 2: Ventisca Eterna',        year:2009, genre:'RPG',              description:"A football RPG with no right to be this emotionally gripping. Eleven's second chapter deepened everything that made the first special." },
-  { rank:21, title:'Uncharted 4: El Desenlace del Ladrón',     year:2016, genre:'Action-Adventure', description:"Naughty Dog's farewell to Drake is also their most personal game — an adventure about the stories we tell ourselves to keep going." },
-  { rank:22, title:'Firewatch',                                year:2016, genre:'Adventure',        description:'One summer in Wyoming, a radio, and a mystery that\'s really about loneliness and avoidance. Campo Santo at their quietest and best.' },
-  { rank:23, title:'Rime',                                     year:2017, genre:'Puzzle-Adventure', description:'A wordless island puzzle that unravels into something devastating. Tequila Works built grief into the geometry.' },
-  { rank:24, title:'Donkey Kong Bananza',                      year:2025, genre:'Platformer',       description:"Nintendo's most tactile platformer in years — a world you can punch apart, and somehow that changes everything." },
-  { rank:25, title:'Sly 3: Honor entre Ladrones',              year:2005, genre:'Action-Adventure', description:"Cooper's final caper assembles the whole crew for a job worthy of the send-off. Witty, warm, and graceful to the end." },
+  { rank:3,  title:'Red Dead Redemption 2',                    year:2018, genre:'Action-Adventure', description:"Rockstar's magnum opus — an open world so alive with detail and consequence it feels less like a game and more like a vanishing world." },
+  { rank:4,  title:'Outer Wilds',                              year:2019, genre:'Exploration',      description:'Every answer leads to a deeper question. A game about time, extinction, and the courage to face what you find.' },
+  { rank:5,  title:'Subnautica',                               year:2018, genre:'Survival',         description:'A survival game built on wonder and dread in equal measure — the ocean floor as the most alien world ever rendered.' },
+  { rank:6,  title:"Marvel's Spider-Man 2",                    year:2023, genre:'Action-Adventure', description:"Insomniac's sequel doubles down on everything — two heroes, a richer city, and a symbiote story that earns its emotional weight." },
+  { rank:7,  title:'Hollow Knight: Silksong',                  year:2025, genre:'Metroidvania',     description:"Hornet's long-awaited solo turn — faster, stranger, and every bit as atmospheric as the underground kingdom it left behind." },
+  { rank:8,  title:'COD: Black Ops 3',                         year:2015, genre:'FPS',              description:"Treyarch's most ambitious entry — a cyberpunk campaign that swings for the surreal and multiplayer that hit its creative peak." },
+  { rank:9,  title:'Hollow Knight',                            year:2017, genre:'Metroidvania',     description:'Hallownest earns its silence. Every corner of this underground kingdom rewards patience with something extraordinary.' },
+  { rank:10, title:'The Last of Us',                           year:2013, genre:'Action-Adventure', description:"Joel and Ellie's cross-country journey redefined what emotional storytelling could mean in an action game." },
+  { rank:11, title:'Rayman Origins',                           year:2011, genre:'Platformer',       description:'UbiArt at its most joyful — a hand-painted fever dream of a platformer that makes every level a visual event.' },
+  { rank:12, title:'Super Mario 64 DS',                        year:2004, genre:'Platformer',       description:"The handheld refinement of gaming's greatest leap. Four playable characters and a world that still feels like discovery." },
+  { rank:13, title:'Pokémon Oro HeartGold',                    year:2009, genre:'RPG',              description:'Two regions, 16 badges, and a Pokémon that follows you everywhere. The richest game in the series, full stop.' },
+  { rank:14, title:'COD: Black Ops 2',                         year:2012, genre:'FPS',              description:'The campaign that dared to give you choices. Branching storylines and a multiplayer still running on servers a decade later.' },
+  { rank:15, title:'The Legend of Zelda: Breath of the Wild',  year:2017, genre:'Action-Adventure', description:'The moment it lets you off the Great Plateau is one of the finest in gaming. Everything else lives up to it.' },
+  { rank:16, title:'Journey',                                  year:2012, genre:'Adventure',        description:'Twelve minutes of shared silence with a stranger that says more about human connection than most novels.' },
+  { rank:17, title:'Ori and the Blind Forest',                 year:2015, genre:'Platformer',       description:"Moon Studios' debut is a love letter to movement — a platformer so fluid and beautiful it feels like playing animation." },
+  { rank:18, title:'Minecraft',                                year:2011, genre:'Sandbox',          description:"A world that generates itself and asks only what you'll build. The sandbox that swallowed a generation." },
+  { rank:19, title:'Lego Star Wars III: The Clone Wars',       year:2011, genre:'Action-Adventure', description:"The Clone Wars era rendered in Traveller's Tales' finest form — chaotic, warm, and more faithful to the source than it had any right to be." },
+  { rank:20, title:'Ratchet & Clank',                          year:2002, genre:'Action-Platformer', description:"Insomniac's original duo at their most inventive — a galaxy of absurd weapons, sharp writing, and platforming still worth returning to." },
+  { rank:21, title:'Inazuma Eleven 2: Ventisca Eterna',        year:2009, genre:'RPG',              description:"A football RPG with no right to be this emotionally gripping. Eleven's second chapter deepened everything that made the first special." },
+  { rank:22, title:'Uncharted 4: El Desenlace del Ladrón',     year:2016, genre:'Action-Adventure', description:"Naughty Dog's farewell to Drake is also their most personal game — an adventure about the stories we tell ourselves to keep going." },
+  { rank:23, title:'Firewatch',                                year:2016, genre:'Adventure',        description:"One summer in Wyoming, a radio, and a mystery that's really about loneliness and avoidance. Campo Santo at their quietest and best." },
+  { rank:24, title:'Rime',                                     year:2017, genre:'Puzzle-Adventure', description:'A wordless island puzzle that unravels into something devastating. Tequila Works built grief into the geometry.' },
+  { rank:25, title:'Donkey Kong Bananza',                      year:2025, genre:'Platformer',       description:"Nintendo's most tactile platformer in years — a world you can punch apart, and somehow that changes everything." },
 ];
 const FILMS = [
   { rank:1,  title:'2001: A Space Odyssey',                   year:1968, genre:'Sci-Fi',          description:'Kubrick\'s transcendent vision of evolution and the infinite. Cinema as pure experience.' },
@@ -208,7 +208,7 @@ function seed() {
   const fList = db.insert('lists', { title:"The Quarter's 25", category:'films', author_name:'The Quarter', description:'Twenty-five films that captured something essential about the human experience.', is_active:true, created_by:admin.id });
 
   GAMES.forEach(g => db.insert('list_items', { ...g, list_id:gList.id, category:'games', is_revealed: g.rank<=10 }));
-  FILMS.forEach(f => db.insert('list_items', { ...f, list_id:fList.id, category:'films', is_revealed: f.rank<=10 }));
+  FILMS.forEach(f => db.insert('list_items', { ...f, list_id:fList.id, category:'films', is_revealed: false }));
   console.log('✓ Lists seeded (1–10 visible, 11–25 hidden)');
 
   const p1 = db.insert('polls', { title:'Best game of the 2010s', category:'games', created_by:admin.id, is_active:true });
@@ -305,11 +305,14 @@ app.post('/api/auth/google', async (req,res) => {
 });
 
 // ── Lists ─────────────────────────────────────────────────────────────────────
-app.get('/api/categories/:cat/lists', (req,res) => {
+app.get('/api/categories/:cat/lists', parseToken, (req,res) => {
   const lists = db.find('lists', l=>l.category===req.params.cat && l.is_active).sort((a,b)=>a.id-b.id);
+  const isAdmin = !!req.user?.is_admin;
   res.json(lists.map(l => {
     const items = db.find('list_items', i=>i.list_id===l.id);
-    return { ...l, total_count:items.length, revealed_count:items.filter(i=>i.is_revealed).length };
+    const revealed = items.filter(i=>i.is_revealed);
+    // Non-admins only see the count of revealed items — total is not exposed
+    return { ...l, total_count: isAdmin ? items.length : revealed.length, revealed_count: revealed.length };
   }));
 });
 
@@ -317,8 +320,9 @@ app.get('/api/lists/:id', parseToken, (req,res) => {
   const list = db.findOne('lists', l=>l.id===+req.params.id && l.is_active);
   if (!list) return res.status(404).json({error:'List not found'});
   const isAdmin = !!req.user?.is_admin;
+  // Non-admins only receive revealed items — hidden items are completely absent from the response
   const items = db.find('list_items', i=>i.list_id===list.id).sort((a,b)=>a.rank-b.rank)
-    .map(item => (isAdmin||item.is_revealed) ? item : {id:item.id,list_id:item.list_id,rank:item.rank,is_revealed:false});
+    .filter(item => isAdmin || item.is_revealed);
   res.json({...list, items});
 });
 
