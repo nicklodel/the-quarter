@@ -1,9 +1,10 @@
-const express = require('express');
-const bcrypt  = require('bcryptjs');
-const jwt     = require('jsonwebtoken');
-const cors    = require('cors');
-const fs      = require('fs');
-const path    = require('path');
+const express    = require('express');
+const bcrypt     = require('bcryptjs');
+const jwt        = require('jsonwebtoken');
+const cors       = require('cors');
+const fs         = require('fs');
+const path       = require('path');
+const { MongoClient } = require('mongodb');
 
 // Load .env file if present (no dotenv dependency needed)
 const envPath = path.join(__dirname, '.env');
@@ -15,20 +16,75 @@ if (fs.existsSync(envPath)) {
 }
 
 const app = express();
-const PORT       = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'quarter-secret-key-change-in-prod';
+const PORT           = process.env.PORT || 3000;
+const JWT_SECRET     = process.env.JWT_SECRET || 'quarter-secret-key-change-in-prod';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || null;
-const DB_FILE  = path.join(__dirname, 'db.json');
+const MONGODB_URI    = process.env.MONGODB_URI || null;
+const DB_FILE        = path.join(__dirname, 'db.json');
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ── JSON store ────────────────────────────────────────────────────────────────
-function readDB() {
-  try { return JSON.parse(fs.readFileSync(DB_FILE, 'utf8')); } catch { return {}; }
+// ── Persistence: MongoDB (production) + JSON file fallback (local dev) ────────
+let _cache = null;          // in-memory cache
+let _mongoColl = null;      // MongoDB collection, null when not configured
+
+async function connectMongo() {
+  if (!MONGODB_URI) return;
+  try {
+    const client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    _mongoColl = client.db('thequarter').collection('store');
+    console.log('✓ MongoDB connected');
+  } catch (e) {
+    console.error('✗ MongoDB connection failed:', e.message);
+  }
 }
-function writeDB(data) { fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2)); }
+
+async function loadDB() {
+  if (_mongoColl) {
+    try {
+      const doc = await _mongoColl.findOne({ _id: 'db' });
+      if (doc) {
+        const { _id, ...data } = doc;
+        _cache = data;
+        console.log('✓ Database loaded from MongoDB');
+        return;
+      }
+      // MongoDB connected but empty — try to seed from local file
+      try {
+        const fileData = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+        _cache = fileData;
+        await _mongoColl.replaceOne({ _id: 'db' }, { _id: 'db', ...fileData }, { upsert: true });
+        console.log('✓ Migrated local db.json → MongoDB');
+      } catch { _cache = {}; }
+      return;
+    } catch (e) {
+      console.error('MongoDB load error:', e.message);
+    }
+  }
+  // File fallback (local dev without MongoDB)
+  try { _cache = JSON.parse(fs.readFileSync(DB_FILE, 'utf8')); }
+  catch { _cache = {}; }
+}
+
+function readDB() {
+  return _cache || {};
+}
+
+function writeDB(data) {
+  _cache = data;
+  if (_mongoColl) {
+    // Async persist — fire and forget, errors logged
+    _mongoColl.replaceOne({ _id: 'db' }, { _id: 'db', ...data }, { upsert: true })
+      .catch(e => console.error('MongoDB write error:', e.message));
+  } else {
+    // Local dev: write to file
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+  }
+}
+
 function nextId(rows) { return rows.length ? Math.max(...rows.map(r => r.id)) + 1 : 1; }
 
 const db = {
@@ -494,4 +550,12 @@ app.get('/api/users/:username', parseToken, (req,res) => {
 });
 
 app.get('*', (_,res) => res.sendFile(path.join(__dirname,'public','index.html')));
-app.listen(PORT, () => console.log(`\n  THE QUARTER  →  http://localhost:${PORT}\n`));
+
+// ── Startup ───────────────────────────────────────────────────────────────────
+(async () => {
+  await connectMongo();
+  await loadDB();
+  migrate();
+  seed();
+  app.listen(PORT, () => console.log(`\n  THE QUARTER  →  http://localhost:${PORT}\n`));
+})();
