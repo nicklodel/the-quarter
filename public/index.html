@@ -22,12 +22,12 @@
         <nav class="nav">
           <a href="/games"     class="nav-link games-link" data-link data-i18n="nav.games">Juegos</a>
           <a href="/community" class="nav-link"            data-link data-i18n="nav.community">Comunidad</a>
-          <a href="/people"    class="nav-link"            data-link data-i18n="nav.people">Personas</a>
           <div class="lang-switcher">
             <button class="lang-btn" data-lang="es" onclick="switchLang('es')">ES</button>
             <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
           </div>
-          <div id="authButtons" class="nav-auth">
+          <!-- Auth buttons hidden — login via /entrar -->
+          <div id="authButtons" class="nav-auth" style="display:none">
             <button class="btn btn-ghost btn-sm" id="loginBtn" data-i18n="auth.loginBtn">Entrar</button>
             <button class="btn btn-primary btn-sm" id="registerBtn" data-i18n="nav.join">Únete</button>
           </div>

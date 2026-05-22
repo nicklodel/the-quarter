@@ -469,7 +469,8 @@ function route(path) {
   if (path === '/games') return renderCategory('games');
   if (path === '/films') return navigate('/', false);
   if (path === '/community') return renderCommunity();
-  if (path === '/people') return renderPeople();
+  if (path === '/people') return navigate('/', false);
+  if (path === '/entrar') { navigate('/', false); openModal('loginModal'); return; }
 
   const listMatch = path.match(/^\/list\/(\w+)$/);
   if (listMatch) return renderListPage(listMatch[1]);
@@ -711,11 +712,6 @@ async function renderCommunity() {
     <div class="page-body">
       <div class="container">
         <div id="pollsContainer">${renderPollsHTML(polls)}</div>
-        ${!currentUser ? `
-          <div class="login-prompt" style="margin-top:24px">
-            <p>${t('community.loginPrompt')}</p>
-            <button class="btn btn-primary" onclick="openModal('loginModal')">${t('community.loginBtn')}</button>
-          </div>` : ''}
       </div>
     </div>`;
 }
@@ -734,17 +730,19 @@ function renderPollCard(poll) {
     const pct = totalVotes ? Math.round((opt.vote_count || 0) / totalVotes * 100) : 0;
     const isMyVote = currentUser && poll.userVote === opt.id;
 
-    if (!currentUser || !poll.userVote) {
+    // Logged-in user who hasn't voted yet — show vote button
+    if (currentUser && !poll.userVote) {
       return `<button class="vote-btn" data-poll="${poll.id}" data-opt="${opt.id}">
         ${esc(opt.title)}${opt.year ? ' (' + opt.year + ')' : ''}
       </button>`;
     }
+    // Logged-in user who voted, or non-logged-in visitor — show results (no vote button for guests)
     return `
       <div class="bar-wrap ${isMyVote ? 'my-vote' : ''} ${isGames ? 'is-games' : 'is-films'}">
         <div class="bar-fill" style="width:${pct}%"></div>
         <div class="bar-text">
           <span class="bar-label">${esc(opt.title)}${opt.year ? ' (' + opt.year + ')' : ''}</span>
-          <span>${isMyVote ? `<span class="bar-check">✓</span>` : ''} <span class="bar-pct">${pct}%</span></span>
+          <span>${isMyVote ? `<span class="bar-check">✓</span>` : ''} <span class="bar-pct">${totalVotes ? pct + '%' : ''}</span></span>
         </div>
       </div>`;
   }).join('');
